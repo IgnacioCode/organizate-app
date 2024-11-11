@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
 export default async function middleware(req) {
 
     const authToken = req.cookies.get('authToken');
     const REQ_PATH = req.nextUrl.pathname
-    const SERVER_FLAG = req.headers.get('server-flag')
+    const SERVER_FLAG = req.headers.get('X-server-flag')
+
+    const SECRET_KEY = process.env.JWT_SEED_KEY;
 
     if (SERVER_FLAG) {
         return NextResponse.next();

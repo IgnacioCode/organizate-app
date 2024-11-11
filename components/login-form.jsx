@@ -1,5 +1,5 @@
 import Link from "next/link"
-
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -12,6 +12,34 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export function LoginForm() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try{
+      const response = await fetch('/api/usr_login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      console.log(data);
+      
+      if (data.success) {
+        console.log('Login exitoso');
+      } else {
+        console.log('Error de autenticación');
+      }
+    }
+    catch(e){
+      console.log(e);
+      
+    }
+  }
+
   return (
     (<Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -24,18 +52,18 @@ export function LoginForm() {
         <div className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" required />
+            <Input id="email" type="email" placeholder="m@example.com" required onChange={(e)=>{setEmail(e.target.value)}} />
           </div>
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
+              <Link href="#" className="ml-auto inline-block text-sm underline" >
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" type="password" required />
+            <Input id="password" type="password" required onChange={(e)=>{setPassword(e.target.value)}} />
           </div>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" onClick={handleLogin}>
             Login
           </Button>
         </div>
