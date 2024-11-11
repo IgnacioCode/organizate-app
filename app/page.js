@@ -1,9 +1,9 @@
 "use client"
- 
-import * as React from "react"
+
+import React, { forwardRef } from "react";
 import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/ui/icons"
-import { cn } from "@/lib/utils"
+import { Icons } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,7 +13,8 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import Link from "next/link";
 
@@ -61,34 +62,49 @@ export default function HomePage() {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="flex content-end">
-          <Button className="mr-4" variant="outline">Iniciar Sesion</Button>
-          <Button>Crear Cuenta</Button>
+        <div className="flex content-end mr-3">
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
         </div>
-
-
       </header>
 
       {/* Main Content */}
       <main className="flex flex-1 flex-col items-center justify-center text-center p-8">
-        <h2 className="text-4xl font-bold mb-4">Bienvenido a Mi Aplicación</h2>
-        <p className="text-lg text-gray-700 mb-8">
-          Descubre las funcionalidades de nuestra aplicación y únete hoy.
-        </p>
-        <Link href="/register">
-          <Button className="px-6 py-3 text-lg">Empezar ahora</Button>
-        </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
+          {/* Plan Panels */}
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="border rounded-lg p-4 shadow-md flex flex-col">
+              <div className="pr-2 mb-2 flex flex-row justify-between items-center">
+                <h2 className="text-xl font-bold">Plan {index + 1}</h2>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2 text-left">
+                Descripción del plan {index + 1} al que el usuario está afiliado o ha creado.
+              </p>
+              <Button variant="outline" className="mt-4">Ver detalles</Button>
+            </div>
+          ))}
+          {/* Create Plan Button */}
+          <div className="border-dashed border-2 border-gray-300 rounded-lg p-4 shadow-md flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100">
+            <Button variant="ghost">Crear un nuevo plan</Button>
+          </div>
+        </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-200 text-center p-4">
-        <p className="text-sm text-gray-600">© 2024 Mi Aplicación. Todos los derechos reservados.</p>
+      <footer className="bg-gray-200 text-center p-2">
+        <p className="text-sm text-gray-600">© 2024 IgnacioCode</p>
       </footer>
     </div>
   );
 }
 
-const ListItem = React.forwardRef(({ className, title, children, ...props }, ref) =>{
+const ListItem = forwardRef(({ className, title, children, ...props }, ref) => {
   return (
     <li>
       <NavigationMenuLink asChild>

@@ -13,13 +13,10 @@ export default async function middleware(req) {
     }
 
     try {
-        // Verificar el token JWT
         await jwtVerify(authToken.value, new TextEncoder().encode(SECRET_KEY));
     } catch (error) {
-        // Si el token no es válido o ha expirado, redirigir al login
         console.log("Error del middleware: " + error);
         return NextResponse.redirect(new URL('/login', req.url));
-        //return NextResponse.next();
     }
 
     return NextResponse.next();
