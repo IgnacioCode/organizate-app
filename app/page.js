@@ -1,7 +1,7 @@
 "use client"
 
-import React, { forwardRef ,useState,useEffect} from "react";
-import { Button } from "@/components/ui/button"
+import React, { forwardRef, useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import {
@@ -15,23 +15,30 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-import Link from "next/link";
-
-
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 export default function HomePage() {
-  const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev"
+  const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
   const [isMounted, setIsMounted] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
-    setIsMounted(true);
+    // Esto se ejecuta solo en el cliente
+    const email = localStorage.getItem('userEmail');
+    setUserEmail(email);
   }, []);
 
-  if (!isMounted) {
-    // Mostrar un loader o nada mientras el componente aún no está montado en el cliente
-    return null;
-  }
   return (
     <div className="min-h-screen flex flex-col">
       <header className="p-3 flex shadow-lg">
@@ -76,10 +83,13 @@ export default function HomePage() {
           </NavigationMenu>
         </div>
         <div className="flex content-end mr-3">
-            <Avatar>
-              <AvatarImage src={STATIC_FILES_DOMAIN + "/pfp_" + localStorage.getItem('userEmail') + ".png"} />
+          <Avatar>
+            {userEmail ? (
+              <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userEmail}.png`} />
+            ) : (
               <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            )}
+          </Avatar>
         </div>
       </header>
 
@@ -103,9 +113,40 @@ export default function HomePage() {
             </div>
           ))}
           {/* Create Plan Button */}
-          <div className="border-dashed border-2 border-gray-300 rounded-lg p-4 shadow-md flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100">
-            <Button variant="ghost">Crear un nuevo plan</Button>
-          </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <div className="border-dashed border-2 border-gray-300 rounded-lg p-4 shadow-md flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100">
+                <Button variant="ghost">Crear un nuevo plan</Button>
+              </div>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <SheetHeader>
+                <SheetTitle>Create new plan</SheetTitle>
+                <SheetDescription>
+                  Write all the information for your new plan! Click save when you're done.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Name
+                  </Label>
+                  <Input id="name" className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="username" className="text-right">
+                    Username
+                  </Label>
+                  <Input id="username" className="col-span-3" />
+                </div>
+              </div>
+              <SheetFooter>
+                <SheetClose asChild>
+                  <Button type="submit">Save changes</Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
         </div>
       </main>
 
@@ -136,6 +177,6 @@ const ListItem = forwardRef(({ className, title, children, ...props }, ref) => {
         </a>
       </NavigationMenuLink>
     </li>
-  )
+  );
 });
 ListItem.displayName = "ListItem";
