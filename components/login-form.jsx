@@ -10,9 +10,13 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useRouter } from 'next/navigation';
+import { useToast } from "@/hooks/use-toast"
+
 
 export function LoginForm() {
-
+  const router = useRouter();
+  const { toast } = useToast()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -29,9 +33,13 @@ export function LoginForm() {
       console.log(data);
       
       if (data.success) {
-        console.log('Login exitoso');
+        localStorage.setItem('userEmail', email);
+        router.push("/")
       } else {
-        console.log('Error de autenticación');
+        toast({
+          title: "Wrong credentials!",
+          description: "The input credentials don't match any user.",
+        })
       }
     }
     catch(e){

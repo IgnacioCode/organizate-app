@@ -1,6 +1,6 @@
 "use client"
 
-import React, { forwardRef } from "react";
+import React, { forwardRef ,useState,useEffect} from "react";
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
@@ -18,7 +18,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import Link from "next/link";
 
+
+
 export default function HomePage() {
+  const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev"
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    // Mostrar un loader o nada mientras el componente aún no está montado en el cliente
+    return null;
+  }
   return (
     <div className="min-h-screen flex flex-col">
       <header className="p-3 flex shadow-lg">
@@ -63,10 +76,10 @@ export default function HomePage() {
           </NavigationMenu>
         </div>
         <div className="flex content-end mr-3">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+            <Avatar>
+              <AvatarImage src={STATIC_FILES_DOMAIN + "/pfp_" + localStorage.getItem('userEmail') + ".png"} />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
         </div>
       </header>
 
