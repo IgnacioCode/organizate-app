@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import {getRequestContext} from "@cloudflare/next-on-pages"
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-
-export function hashPassword(plainInput) { // Número de iteraciones del algoritmo, a mayor número, mayor seguridad y costo computacional
-    const salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(plainInput, salt);
-}
-
-export function verifyPassword(plainPassword, hashedPassword) {
-    return bcrypt.compareSync(plainPassword, hashedPassword);
-}
 
 const SECRET_KEY = process.env.JWT_SEED_KEY;
 
@@ -27,9 +17,6 @@ export async function POST(request) {
         body: JSON.stringify({ email, password }),
       });
     const data = await response.json();
-    console.log("API --->");
-    
-    console.log(data);
 
     if(data.success!=false){
         const authToken = jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' });

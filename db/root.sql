@@ -1,7 +1,7 @@
-PRAGMA defer_foreign_keys=TRUE;
-CREATE TABLE [User] ("id_user" integer PRIMARY KEY,"email" text,"password" text,"nickname" text);
-INSERT INTO User VALUES(1,'admin','admin','Kirman');
+-- Deshabilitar temporalmente las restricciones de clave foránea
+PRAGMA foreign_keys = OFF;
 
+-- Eliminar tablas existentes si existen
 DROP TABLE IF EXISTS PollVotes;
 DROP TABLE IF EXISTS PollOptions;
 DROP TABLE IF EXISTS Polls;
@@ -13,102 +13,111 @@ DROP TABLE IF EXISTS Groups;
 DROP TABLE IF EXISTS Plans;
 DROP TABLE IF EXISTS Users;
 
+-- Crear tabla Users
 CREATE TABLE Users (
-    user_id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
 );
 
+-- Crear tabla Plans
 CREATE TABLE Plans (
-    plan_id INT PRIMARY KEY AUTO_INCREMENT,
-    created_by_user_id INT,
-    name VARCHAR(255) NOT NULL,
+    plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_by_user_id INTEGER,
+    name TEXT NOT NULL,
     description TEXT,
-    date DATETIME,
-    location VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    date TEXT,
+    location TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (created_by_user_id) REFERENCES Users(user_id)
 );
 
+-- Crear tabla Groups
 CREATE TABLE Groups (
-    group_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
+    group_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
     description TEXT,
-    created_by_user_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by_user_id INTEGER,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (created_by_user_id) REFERENCES Users(user_id)
 );
 
+-- Crear tabla UserPlans
 CREATE TABLE UserPlans (
-    user_plan_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
-    plan_id INT,
-    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    plan_id INTEGER,
+    joined_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (plan_id) REFERENCES Plans(plan_id)
 );
 
+-- Crear tabla GroupUsers
 CREATE TABLE GroupUsers (
-    group_user_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
-    group_id INT,
-    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    group_user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    group_id INTEGER,
+    joined_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (group_id) REFERENCES Groups(group_id)
 );
 
+-- Crear tabla GroupPlans
 CREATE TABLE GroupPlans (
-    group_plan_id INT PRIMARY KEY AUTO_INCREMENT,
-    group_id INT,
-    plan_id INT,
+    group_plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER,
+    plan_id INTEGER,
     FOREIGN KEY (group_id) REFERENCES Groups(group_id),
     FOREIGN KEY (plan_id) REFERENCES Plans(plan_id)
 );
 
--- Tabla de Comentarios
+-- Crear tabla Comments
 CREATE TABLE Comments (
-    comment_id INT PRIMARY KEY AUTO_INCREMENT,
-    plan_id INT NOT NULL,
-    user_id INT NOT NULL,
+    comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    plan_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
     content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (plan_id) REFERENCES Plans(plan_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
--- Tabla de Encuestas
+-- Crear tabla Polls
 CREATE TABLE Polls (
-    poll_id INT PRIMARY KEY AUTO_INCREMENT,
-    plan_id INT NOT NULL,
-    question VARCHAR(255) NOT NULL,
-    created_by_user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    poll_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    plan_id INTEGER NOT NULL,
+    question TEXT NOT NULL,
+    created_by_user_id INTEGER NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (plan_id) REFERENCES Plans(plan_id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_user_id) REFERENCES Users(user_id)
 );
 
--- Tabla de Opciones de Encuestas
+-- Crear tabla PollOptions
 CREATE TABLE PollOptions (
-    option_id INT PRIMARY KEY AUTO_INCREMENT,
-    poll_id INT NOT NULL,
-    option_text VARCHAR(255) NOT NULL,
+    option_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    poll_id INTEGER NOT NULL,
+    option_text TEXT NOT NULL,
     FOREIGN KEY (poll_id) REFERENCES Polls(poll_id) ON DELETE CASCADE
 );
 
--- Tabla de Votos de Encuestas
+-- Crear tabla PollVotes
 CREATE TABLE PollVotes (
-    vote_id INT PRIMARY KEY AUTO_INCREMENT,
-    poll_id INT NOT NULL,
-    option_id INT NOT NULL,
-    user_id INT NOT NULL,
-    voted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    vote_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    poll_id INTEGER NOT NULL,
+    option_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    voted_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (poll_id) REFERENCES Polls(poll_id) ON DELETE CASCADE,
     FOREIGN KEY (option_id) REFERENCES PollOptions(option_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     UNIQUE (poll_id, user_id)
 );
+
+-- Habilitar nuevamente las restricciones de clave foránea
+PRAGMA foreign_keys = ON;
