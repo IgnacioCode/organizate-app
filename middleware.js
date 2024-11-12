@@ -12,6 +12,9 @@ export default async function middleware(req) {
         return NextResponse.next();
     }
 
+    console.log(req);
+    console.log(REQ_PATH);
+
     try {
         await jwtVerify(authToken.value, new TextEncoder().encode(SECRET_KEY));
     } catch (error) {

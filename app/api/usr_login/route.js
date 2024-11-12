@@ -1,22 +1,31 @@
 import { NextResponse } from 'next/server';
-import {getRequestContext} from "@cloudflare/next-on-pages"
 import jwt from 'jsonwebtoken';
+import { hashPassword } from '@/app/utils/general';
 
 const SECRET_KEY = process.env.JWT_SEED_KEY;
 
 export async function POST(request) {
     const { email, password } = await request.json();
 
+    console.log(password);
     
+    const hash_password = await hashPassword(password);
+
+    console.log(hash_password);
+    
+
     let response = await fetch(process.env.DEPLOY_IP + '/api/check_cred', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-server-flag':"InternalRequest"
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password:hash_password }),
       });
     const data = await response.json();
+
+    console.log(data);
+    
 
     if(data.success!=false){
         const authToken = jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' });
