@@ -148,7 +148,7 @@ export default function HomePage() {
       <main className="flex flex-1 flex-col items-center justify-center text-center p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
           {/* Plan Panels */}
-          {planList.map((plan, index) => (
+          {planList?(planList.map((plan, index) => (
             <PlanCard
               key={index}
               planIndex={plan.plan_id}
@@ -156,7 +156,7 @@ export default function HomePage() {
               planDescription={plan.description}
               avatarSrc={plan.user_id}
             />
-          ))}
+          ))):<div></div>}
           {/* Create Plan Button */}
           <Sheet>
             <SheetTrigger asChild>

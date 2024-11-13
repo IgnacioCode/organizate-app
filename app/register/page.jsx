@@ -49,6 +49,7 @@ function RegistrationForm() {
           body: JSON.stringify(newBody),
         });
         if(responseLogin.ok){
+          localStorage.setItem('userEmail', values.email);
           router.push('/');
         }
         else{
