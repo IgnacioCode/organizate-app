@@ -36,19 +36,59 @@ import {
 } from "@/components/ui/popover"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import PlanCard from "@/components/plan-card";
 
 
 export default function HomePage() {
   const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
   const [isMounted, setIsMounted] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+
+  const [planName, setPlanName] = useState();
+  const [planDesc, setPlanDesc] = useState();
   const [date, setDate] = useState();
+
+  const [planList, setPlanList] = useState([]);
+
+  const getPlansList = async (email) => {
+    const response = await fetch('/api/get_plans?email=' + email, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json()
+    const planList = data.plans
+    
+    setPlanList(planList)
+  }
 
   useEffect(() => {
     // Esto se ejecuta solo en el cliente
     const email = localStorage.getItem('userEmail');
     setUserEmail(email);
+    getPlansList(email)
   }, []);
+
+  const handleSumbit = async () => {
+
+    try {
+      const response = await fetch('/api/create_plan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: planName, description: planDesc, date: date }),
+      });
+      console.log(response);
+      getPlansList(localStorage.getItem('userEmail'))
+    }
+    catch (e) {
+      console.log(e);
+
+    }
+
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -108,20 +148,14 @@ export default function HomePage() {
       <main className="flex flex-1 flex-col items-center justify-center text-center p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
           {/* Plan Panels */}
-          {[...Array(5)].map((_, index) => (
-            <div key={index} className="border rounded-lg p-4 shadow-md flex flex-col">
-              <div className="pr-2 mb-2 flex flex-row justify-between items-center">
-                <h2 className="text-xl font-bold">Plan {index + 1}</h2>
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </div>
-              <p className="text-sm text-muted-foreground mt-2 text-left">
-                Descripción del plan {index + 1} al que el usuario está afiliado o ha creado.
-              </p>
-              <Button variant="outline" className="mt-4">Ver detalles</Button>
-            </div>
+          {planList.map((plan, index) => (
+            <PlanCard
+              key={index}
+              planIndex={plan.plan_id}
+              planName={plan.name}
+              planDescription={plan.description}
+              avatarSrc={plan.user_id}
+            />
           ))}
           {/* Create Plan Button */}
           <Sheet>
@@ -142,13 +176,13 @@ export default function HomePage() {
                   <Label htmlFor="name" className="text-right">
                     Name
                   </Label>
-                  <Input id="name" className="col-span-3" />
+                  <Input id="name" className="col-span-3" onChange={(e) => setPlanName(e.target.value)} />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
                     Description
                   </Label>
-                  <Textarea className="col-span-3" />
+                  <Textarea className="col-span-3" onChange={(e) => setPlanDesc(e.target.value)} />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
@@ -183,7 +217,7 @@ export default function HomePage() {
               </div>
               <SheetFooter>
                 <SheetClose asChild>
-                  <Button type="submit">Save changes</Button>
+                  <Button onClick={handleSumbit}>Save changes</Button>
                 </SheetClose>
               </SheetFooter>
             </SheetContent>

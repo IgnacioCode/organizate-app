@@ -26,14 +26,14 @@ CREATE TABLE Users (
 -- Crear tabla Plans
 CREATE TABLE Plans (
     plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    created_by_user_id INTEGER,
+    user_id INTEGER,
     name TEXT NOT NULL,
     description TEXT,
     date TEXT,
     location TEXT,
     created_at TEXT DEFAULT (datetime('now')),
     updated_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY (created_by_user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
 -- Crear tabla Groups
