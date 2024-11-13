@@ -18,7 +18,7 @@ function PlanCard({ planIndex, planName, planDescription, avatarSrc }) {
             <p className="text-sm text-muted-foreground mt-2 text-left">
                 {planDescription || `Descripción del plan ${planIndex + 1} al que el usuario está afiliado o ha creado.`}
             </p>
-            <Button variant="outline" className="mt-4">
+            <Button className="mt-4">
                 Ver detalles
             </Button>
         </div>

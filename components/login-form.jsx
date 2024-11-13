@@ -39,8 +39,9 @@ export function LoginForm() {
         router.push("/")
       } else {
         toast({
+          variant: "destructive",
           title: "Wrong credentials!",
-          description: "The input credentials don't match any user.",
+          description: "The input credentials don't match any user."
         })
       }
     }

@@ -7,13 +7,12 @@ import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu";
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sheet,
@@ -37,10 +36,12 @@ import {
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import PlanCard from "@/components/plan-card";
+import Link from "next/link"
+import Header from '@/components/header'
 
 
 export default function HomePage() {
-  const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
+  
   const [isMounted, setIsMounted] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const [userId, setUserId] = useState('')
@@ -60,7 +61,7 @@ export default function HomePage() {
     });
     const data = await response.json()
     const planList = data.plans
-    
+
     setPlanList(planList)
   }
 
@@ -95,63 +96,13 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="p-3 flex shadow-lg">
-        <div className="flex-1">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                    <li className="row-span-3">
-                      <NavigationMenuLink asChild>
-                        <a
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                          href="/"
-                        >
-                          <Icons.logo className="h-6 w-6" />
-                          <div className="mb-2 mt-4 text-lg font-medium">
-                            shadcn/ui
-                          </div>
-                          <p className="text-sm leading-tight text-muted-foreground">
-                            Beautifully designed components that you can copy and
-                            paste into your apps. Accessible. Customizable. Open
-                            Source.
-                          </p>
-                        </a>
-                      </NavigationMenuLink>
-                    </li>
-                    <ListItem href="/docs" title="Introduction">
-                      Re-usable components built using Radix UI and Tailwind CSS.
-                    </ListItem>
-                    <ListItem href="/docs/installation" title="Installation">
-                      How to install dependencies and structure your app.
-                    </ListItem>
-                    <ListItem href="/docs/primitives/typography" title="Typography">
-                      Styles for headings, paragraphs, lists...etc
-                    </ListItem>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-        <div className="flex content-end mr-3">
-          <Avatar>
-            {userEmail ? (
-              <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userId}.png`} />
-            ) : (
-              <AvatarFallback>CN</AvatarFallback>
-            )}
-          </Avatar>
-        </div>
-      </header>
+      <Header userId={userId}></Header>
 
       {/* Main Content */}
       <main className="flex flex-1 flex-col items-center justify-center text-center p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
           {/* Plan Panels */}
-          {planList?(planList.map((plan, index) => (
+          {planList ? (planList.map((plan, index) => (
             <PlanCard
               key={index}
               planIndex={plan.plan_id}
@@ -159,7 +110,7 @@ export default function HomePage() {
               planDescription={plan.description}
               avatarSrc={plan.user_id}
             />
-          ))):<div></div>}
+          ))) : <div></div>}
           {/* Create Plan Button */}
           <Sheet>
             <SheetTrigger asChild>

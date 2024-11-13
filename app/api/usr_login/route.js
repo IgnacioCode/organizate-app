@@ -6,13 +6,8 @@ const SECRET_KEY = process.env.JWT_SEED_KEY;
 
 export async function POST(request) {
     const { email, password } = await request.json();
-
-    console.log(password);
     
     const hash_password = await hashPassword(password);
-
-    console.log(hash_password);
-    
 
     let response = await fetch(process.env.DEPLOY_IP + '/api/check_cred', {
         method: 'POST',
@@ -24,11 +19,8 @@ export async function POST(request) {
       });
     const data = await response.json();
 
-    console.log(data);
-    
-    let user_id = data.users[0].user_id;
-
     if(data.success!=false){
+        let user_id = data.users[0].user_id;
         const authToken = jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' });
         response = NextResponse.json({ message: 'Inicio de sesion exitoso', success:true ,user_id:user_id}, { status: 200 });
         response.headers.set('Set-Cookie', `authToken=${authToken}; Path=/; HttpOnly; SameSite=Strict`);
