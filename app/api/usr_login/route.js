@@ -26,10 +26,11 @@ export async function POST(request) {
 
     console.log(data);
     
+    let user_id = data.users[0].user_id;
 
     if(data.success!=false){
         const authToken = jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' });
-        response = NextResponse.json({ message: 'Inicio de sesion exitoso', success:true }, { status: 200 });
+        response = NextResponse.json({ message: 'Inicio de sesion exitoso', success:true ,user_id:user_id}, { status: 200 });
         response.headers.set('Set-Cookie', `authToken=${authToken}; Path=/; HttpOnly; SameSite=Strict`);
         response.headers.append('Set-Cookie', `userEmail=${email}; Path=/; HttpOnly; SameSite=Strict`);
     }
@@ -37,6 +38,5 @@ export async function POST(request) {
         response = NextResponse.json({ message: 'Credenciales incorrectas', success:false }, { status: 404 });
     }
     
-
     return response
 }

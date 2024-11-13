@@ -48,8 +48,11 @@ function RegistrationForm() {
           },
           body: JSON.stringify(newBody),
         });
+        const data = await responseLogin.json();
+        const user_id = data.user_id;
         if(responseLogin.ok){
           localStorage.setItem('userEmail', values.email);
+          localStorage.setItem('userId', user_id);
           router.push('/');
         }
         else{

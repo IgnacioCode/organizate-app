@@ -30,10 +30,12 @@ export function LoginForm() {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
+      const user_id = data.user_id;
       console.log(data);
       
       if (data.success) {
         localStorage.setItem('userEmail', email);
+        localStorage.setItem('userId', user_id);
         router.push("/")
       } else {
         toast({

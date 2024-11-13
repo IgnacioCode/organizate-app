@@ -43,6 +43,7 @@ export default function HomePage() {
   const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
   const [isMounted, setIsMounted] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+  const [userId, setUserId] = useState('')
 
   const [planName, setPlanName] = useState();
   const [planDesc, setPlanDesc] = useState();
@@ -66,6 +67,8 @@ export default function HomePage() {
   useEffect(() => {
     // Esto se ejecuta solo en el cliente
     const email = localStorage.getItem('userEmail');
+    const user_id = localStorage.getItem('userId')
+    setUserId(user_id);
     setUserEmail(email);
     getPlansList(email)
   }, []);
@@ -136,7 +139,7 @@ export default function HomePage() {
         <div className="flex content-end mr-3">
           <Avatar>
             {userEmail ? (
-              <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userEmail}.png`} />
+              <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userId}.png`} />
             ) : (
               <AvatarFallback>CN</AvatarFallback>
             )}
