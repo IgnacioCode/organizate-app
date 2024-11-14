@@ -8,7 +8,7 @@ import Link from "next/link"
 function PlanCard({ planIndex, planName, planDescription, avatarSrc }) {
     const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
     return (
-        <div className="border rounded-lg p-4 shadow-md flex flex-col">
+        <div className="border rounded-lg p-4 shadow-md flex flex-col justify-between">
             <div className="pr-2 mb-2 flex flex-row justify-between items-center">
                 <h2 className="text-xl font-bold">{planName || `Plan ${planIndex + 1}`}</h2>
                 <Avatar>
@@ -21,7 +21,7 @@ function PlanCard({ planIndex, planName, planDescription, avatarSrc }) {
             </p>
             <Link className="w-full" href={"/plan/details?planId=" + planIndex}>
                 <Button className="mt-4 w-full">
-                    Ver detalles
+                    See details
                 </Button>
             </Link>
 

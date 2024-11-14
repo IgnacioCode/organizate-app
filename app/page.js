@@ -61,17 +61,24 @@ export default function HomePage() {
     });
     const data = await response.json()
     const planList = data.plans
+    
 
     setPlanList(planList)
+    console.log(planList);
+    
+    localStorage.setItem('planList', JSON.stringify(planList));
+        
+    return planList;
   }
 
   useEffect(() => {
     // Esto se ejecuta solo en el cliente
     const email = localStorage.getItem('userEmail');
-    const user_id = localStorage.getItem('userId')
+    const user_id = localStorage.getItem('userId');
+    
     setUserId(user_id);
     setUserEmail(email);
-    getPlansList(email)
+    getPlansList(email)    
   }, []);
 
   const handleSumbit = async () => {
