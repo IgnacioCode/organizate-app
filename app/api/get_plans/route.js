@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getRequestContext } from "@cloudflare/next-on-pages"
-import { cookies } from 'next/headers'
 import {get_user_id_by_email,get_plans_by_user_id} from '@/db/sql_func.js';
 
 export async function GET(request) {

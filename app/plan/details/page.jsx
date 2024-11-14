@@ -45,21 +45,58 @@ export default function HomePage() {
   const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
 
   const [userId, setUserId] = useState('')
+  const [textValue, setTextValue] = useState('');
   const [planName, setPlanName] = useState();
   const [planDesc, setPlanDesc] = useState();
   const [planList, setPlanList] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState({})
-
+  const [commentList, setCommentList] = useState([]);
+  
   const searchParams = useSearchParams()
 
   const planIdURL = searchParams.get('planId')
 
+  const getPlanComments = async () =>{
+    console.log(selectedPlan);
+    
+    const response = await fetch('/api/comment/get_comments?plan_id=' + planIdURL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json()
+
+    console.log(data);
+    
+
+  }
+
+  const sendNewComment = async () => {
+    
+    let values = {
+      plan_id:planIdURL,
+      user_id:userId,
+      content:textValue
+    }
+
+    const response = await fetch('/api/comment/add_comment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(values),
+    });
+    console.log(response);
+    
+  }
+
   useEffect(() => {
     const user_id = localStorage.getItem('userId')
-    setUserId(user_id);
-    //setPlanList(JSON.parse(localStorage.getItem('planList')))
     let storedList = JSON.parse(localStorage.getItem('planList'))
-    console.log(storedList);
+    
+    setUserId(user_id);
     setPlanList(storedList)
 
     storedList.forEach((plan) => {
@@ -67,6 +104,8 @@ export default function HomePage() {
         setSelectedPlan(plan)
       }
     })
+
+    getPlanComments()
 
   }, []);
 
@@ -90,14 +129,14 @@ export default function HomePage() {
               <p className="text-lg font-bold">People invited</p>
               <ScrollArea className="mt-2 h-72 w-48 rounded-md border">
                 <div className="flex flex-col p-4 items-start">
-                  {tags.map((tag, key) => (
+                  {/*tags.map((tag, key) => (
                     <>
                       <div key={tag} className="text-sm">
                         {tag}
                       </div>
                       <Separator className="my-2" />
                     </>
-                  ))}
+                  ))*/}
                 </div>
               </ScrollArea>
             </div>
@@ -164,14 +203,13 @@ export default function HomePage() {
           </div>
           <div className="flex flex-col w-full gap-1.5 mt-2 items-start">
             <h1 className="text-lg font-bold">Your comment</h1>
-            <div className="flex flex-row w-[70%]">
-              <Textarea placeholder="Type your message here." id="message" className="resize-none h-[80px] " />
-              <Button>Send</Button>
-              <Button variant="destructive">Quit plan</Button>
+            <div className="flex flex-row w-[70%] items-end">
+              <Textarea value={textValue} onChange={(e) => setTextValue(e.target.value)} placeholder="Type your message here." id="newComment" className="resize-none h-[80px] " />
+              <Button className="ml-2 w-[100px] h-[50px]" onClick={sendNewComment}>Send</Button>
+              <Button className="ml-2 w-[100px] h-[50px]" variant="destructive">Quit plan</Button>
             </div>
 
           </div>
-
 
         </div>
       </main>
