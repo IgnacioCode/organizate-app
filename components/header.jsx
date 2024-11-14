@@ -13,7 +13,7 @@ export default function Header({ userId }) {
             <div className="flex-1">
                 <Button variant="ghost" className="mr-3 h-[40px]"><Link href="/">Home</Link></Button>
                 <Button variant="ghost" className="mr-3 h-[40px]"><Link href="/groups">Groups</Link></Button>
-                <Button variant="ghost" className="mr-3 h-[40px]"><Link href="/groups">My profile</Link></Button>
+                <Button variant="ghost" className="mr-3 h-[40px]"><Link href="/profile">My profile</Link></Button>
             </div>
             <div className="flex content-end mr-3 content-center">
                 <Button variant="ghost" className="mr-3 h-[40px]">Log out</Button>

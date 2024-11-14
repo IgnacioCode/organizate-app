@@ -1,56 +1,31 @@
 "use client"
 
 import React, { forwardRef, useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/ui/icons";
-import { cn } from "@/lib/utils";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Calendar } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import PlanCard from "@/components/plan-card";
-import Link from "next/link"
 import Header from '@/components/header'
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
+const tags = Array.from({ length: 50 }).map(
+  (_, i, a) => `v1.2.0-beta.${a.length - i}`
+)
 
 export default function HomePage() {
   const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
-  const [isMounted, setIsMounted] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
-  const [userId, setUserId] = useState('')
 
+  const [userId, setUserId] = useState('')
   const [planName, setPlanName] = useState();
   const [planDesc, setPlanDesc] = useState();
-  const [date, setDate] = useState();
-
-  const [planList, setPlanList] = useState([]);
 
   const getPlansList = async (email) => {
     const response = await fetch('/api/get_plans?email=' + email, {
@@ -66,11 +41,13 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    // Esto se ejecuta solo en el cliente
-    
+    const user_id = localStorage.getItem('userId')
+    setUserId(user_id);
+
   }, []);
 
-  
+
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -78,7 +55,98 @@ export default function HomePage() {
 
       {/* Main Content */}
       <main className="flex flex-1 flex-col items-center justify-center text-center p-8">
-        
+        <div className="border rounded-lg p-6 shadow-md flex flex-col items-start lg:min-w-[800px]">
+          <div className="pr-2 mb-2 flex flex-row justify-between items-center">
+            <h1 className="text-3xl font-bold">El mejor Planazo</h1>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2 text-left">
+            {`Descripción del plan al que el usuario está afiliado o ha creado.`}
+          </p>
+          <div className="mt-2 flex flex-row items-center">
+            <p className="text-lg font-bold">Date:</p>
+            <p className="ml-2 text-lg " >21/11/2024</p>
+          </div>
+          <div className="flex flex-row items-start">
+            <div className="mt-2 flex flex-col items-start">
+              <p className="text-lg font-bold">People invited</p>
+              <ScrollArea className="mt-2 h-72 w-48 rounded-md border">
+                <div className="flex flex-col p-4 items-start">
+                  {tags.map((tag) => (
+                    <>
+                      <div key={tag} className="text-sm">
+                        {tag}
+                      </div>
+                      <Separator className="my-2" />
+                    </>
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
+            <div className="mt-2 ml-12 flex flex-col items-start hidden lg:block">
+              <p className="text-lg font-bold">Comments</p>
+              <ScrollArea className="mt-2 h-72 rounded-md border">
+                <Table className="w-max">
+                  <TableHeader>
+                    <TableRow className="p-2">
+                      <TableHead className="lg:w-[500px]">Comment</TableHead>
+                      <TableHead className="lg:w-[135px]">Date</TableHead>
+                      <TableHead className="lg:w-[100px]">Author</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow className="text-left">
+                      <TableCell className="max-w-[500px]">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</TableCell>
+                      <TableCell>12/11/24 11:19</TableCell>
+                      <TableCell className="">
+                        <div className="flex flex-row items-center">
+                          <Avatar>
+                            <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_admin.png`} />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <p className="ml-2">Pablo</p>
+                        </div>
+
+                      </TableCell>
+                    </TableRow>
+                    <TableRow className="text-left">
+                      <TableCell className="max-w-[500px]">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</TableCell>
+                      <TableCell>12/11/24 11:19</TableCell>
+                      <TableCell className="">
+                        <div className="flex flex-row items-center">
+                          <Avatar>
+                            <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_admin.png`} />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <p className="ml-2">Pablo</p>
+                        </div>
+
+                      </TableCell>
+                    </TableRow>
+                    <TableRow className="text-left">
+                      <TableCell className="max-w-[500px]">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</TableCell>
+                      <TableCell>12/11/24 11:19</TableCell>
+                      <TableCell className="">
+                        <div className="flex flex-row items-center">
+                          <Avatar>
+                            <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_admin.png`} />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <p className="ml-2">Pablo</p>
+                        </div>
+
+                      </TableCell>
+                    </TableRow>
+                    
+                    
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            </div>
+          </div>
+
+
+
+        </div>
       </main>
 
       {/* Footer */}
@@ -89,25 +157,3 @@ export default function HomePage() {
   );
 }
 
-const ListItem = forwardRef(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";

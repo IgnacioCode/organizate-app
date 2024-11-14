@@ -81,7 +81,7 @@ CREATE TABLE Comments (
     comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
     plan_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    content TEXT NOT NULL,
+    content TEXT NOT NULL CHECK(LENGTH(content) <= 128),
     created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (plan_id) REFERENCES Plans(plan_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE

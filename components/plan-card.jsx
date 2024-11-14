@@ -3,6 +3,7 @@
 import React from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import Link from "next/link"
 
 function PlanCard({ planIndex, planName, planDescription, avatarSrc }) {
     const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
@@ -18,9 +19,12 @@ function PlanCard({ planIndex, planName, planDescription, avatarSrc }) {
             <p className="text-sm text-muted-foreground mt-2 text-left">
                 {planDescription || `Descripción del plan ${planIndex + 1} al que el usuario está afiliado o ha creado.`}
             </p>
-            <Button className="mt-4">
-                Ver detalles
-            </Button>
+            <Link className="w-full" href={"/plan/details?planId=" + planIndex}>
+                <Button className="mt-4 w-full">
+                    Ver detalles
+                </Button>
+            </Link>
+
         </div>
     );
 }
