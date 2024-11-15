@@ -1,6 +1,6 @@
 "use client"
 
-import React, { forwardRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Header from '@/components/header'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { comment } from "postcss";
 
 const tags = Array.from({ length: 50 }).map(
   (_, i, a) => `v1.2.0-beta.${a.length - i}`
@@ -46,19 +47,16 @@ export default function HomePage() {
 
   const [userId, setUserId] = useState('')
   const [textValue, setTextValue] = useState('');
-  const [planName, setPlanName] = useState();
-  const [planDesc, setPlanDesc] = useState();
   const [planList, setPlanList] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState({})
   const [commentList, setCommentList] = useState([]);
-  
+
   const searchParams = useSearchParams()
 
   const planIdURL = searchParams.get('planId')
 
-  const getPlanComments = async () =>{
-    console.log(selectedPlan);
-    
+  const getPlanComments = async () => {
+
     const response = await fetch('/api/comment/get_comments?plan_id=' + planIdURL, {
       method: 'GET',
       headers: {
@@ -68,17 +66,18 @@ export default function HomePage() {
 
     const data = await response.json()
 
-    console.log(data);
+    setCommentList(data.comments)
     
 
+    
   }
 
   const sendNewComment = async () => {
-    
+
     let values = {
-      plan_id:planIdURL,
-      user_id:userId,
-      content:textValue
+      plan_id: planIdURL,
+      user_id: userId,
+      content: textValue
     }
 
     const response = await fetch('/api/comment/add_comment', {
@@ -89,16 +88,20 @@ export default function HomePage() {
       body: JSON.stringify(values),
     });
     console.log(response);
-    
+    if(response.ok){
+      setTextValue('')
+      getPlanComments()
+    }
+
   }
 
   useEffect(() => {
-    const user_id = localStorage.getItem('userId')
-    let storedList = JSON.parse(localStorage.getItem('planList'))
-    
-    setUserId(user_id);
-    setPlanList(storedList)
 
+    const storedUserId = localStorage.getItem('userId')
+    let storedList = JSON.parse(localStorage.getItem('planList'))
+
+    setPlanList(storedList)
+    setUserId(storedUserId)
     storedList.forEach((plan) => {
       if (plan.plan_id == planIdURL) {
         setSelectedPlan(plan)
@@ -106,8 +109,12 @@ export default function HomePage() {
     })
 
     getPlanComments()
-
+    
   }, []);
+
+  useEffect(()=>{
+    console.log(commentList);
+  },[commentList]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -146,56 +153,28 @@ export default function HomePage() {
                 <Table className="w-max">
                   <TableHeader>
                     <TableRow className="p-2">
-                      <TableHead className="lg:w-[500px]">Comment</TableHead>
-                      <TableHead className="lg:w-[135px]">Date</TableHead>
+                      <TableHead className="lg:w-[480px]">Comment</TableHead>
+                      <TableHead className="lg:w-[175px]">Date</TableHead>
                       <TableHead className="lg:w-[100px]">Author</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow className="text-left">
-                      <TableCell className="max-w-[500px]">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</TableCell>
-                      <TableCell>12/11/24 11:19</TableCell>
-                      <TableCell className="">
-                        <div className="flex flex-row items-center">
-                          <Avatar>
-                            <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_admin.png`} />
-                            <AvatarFallback>CN</AvatarFallback>
-                          </Avatar>
-                          <p className="ml-2">Pablo</p>
-                        </div>
-
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="text-left">
-                      <TableCell className="max-w-[500px]">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</TableCell>
-                      <TableCell>12/11/24 11:19</TableCell>
-                      <TableCell className="">
-                        <div className="flex flex-row items-center">
-                          <Avatar>
-                            <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_admin.png`} />
-                            <AvatarFallback>CN</AvatarFallback>
-                          </Avatar>
-                          <p className="ml-2">Pablo</p>
-                        </div>
-
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="text-left">
-                      <TableCell className="max-w-[500px]">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</TableCell>
-                      <TableCell>12/11/24 11:19</TableCell>
-                      <TableCell className="">
-                        <div className="flex flex-row items-center">
-                          <Avatar>
-                            <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_admin.png`} />
-                            <AvatarFallback>CN</AvatarFallback>
-                          </Avatar>
-                          <p className="ml-2">Pablo</p>
-                        </div>
-
-                      </TableCell>
-                    </TableRow>
-
-
+                    {commentList!=[] ? (commentList.map((comment) => (
+                      <TableRow className="text-left">
+                        <TableCell className="max-w-[500px]">{comment.content}</TableCell>
+                        <TableCell>{comment.created_at}</TableCell>
+                        <TableCell className="">
+                          <div className="flex flex-row items-center">
+                            <Avatar>
+                              <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_` + comment.user_id +'.png'} />
+                              <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                            <p className="ml-2">{comment.username}</p>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))) : (<div></div>)
+                    }
                   </TableBody>
                 </Table>
               </ScrollArea>

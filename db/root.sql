@@ -31,6 +31,7 @@ CREATE TABLE Plans (
     description TEXT,
     date TEXT,
     location TEXT,
+    invite_key TEXT,
     created_at TEXT DEFAULT (datetime('now')),
     updated_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
@@ -48,8 +49,8 @@ CREATE TABLE Groups (
 );
 
 -- Crear tabla UserPlans
-CREATE TABLE UserPlans (
-    user_plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE PlansJoined (
+    join_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     plan_id INTEGER,
     joined_at TEXT DEFAULT (datetime('now')),
@@ -65,15 +66,6 @@ CREATE TABLE GroupUsers (
     joined_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (group_id) REFERENCES Groups(group_id)
-);
-
--- Crear tabla GroupPlans
-CREATE TABLE GroupPlans (
-    group_plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    group_id INTEGER,
-    plan_id INTEGER,
-    FOREIGN KEY (group_id) REFERENCES Groups(group_id),
-    FOREIGN KEY (plan_id) REFERENCES Plans(plan_id)
 );
 
 -- Crear tabla Comments
@@ -92,32 +84,12 @@ CREATE TABLE Polls (
     poll_id INTEGER PRIMARY KEY AUTOINCREMENT,
     plan_id INTEGER NOT NULL,
     question TEXT NOT NULL,
-    created_by_user_id INTEGER NOT NULL,
     created_at TEXT DEFAULT (datetime('now')),
+    options TEXT,
+    votes TEXT,
     FOREIGN KEY (plan_id) REFERENCES Plans(plan_id) ON DELETE CASCADE,
-    FOREIGN KEY (created_by_user_id) REFERENCES Users(user_id)
 );
 
--- Crear tabla PollOptions
-CREATE TABLE PollOptions (
-    option_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    poll_id INTEGER NOT NULL,
-    option_text TEXT NOT NULL,
-    FOREIGN KEY (poll_id) REFERENCES Polls(poll_id) ON DELETE CASCADE
-);
-
--- Crear tabla PollVotes
-CREATE TABLE PollVotes (
-    vote_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    poll_id INTEGER NOT NULL,
-    option_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
-    voted_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY (poll_id) REFERENCES Polls(poll_id) ON DELETE CASCADE,
-    FOREIGN KEY (option_id) REFERENCES PollOptions(option_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    UNIQUE (poll_id, user_id)
-);
 
 -- Habilitar nuevamente las restricciones de clave foránea
 PRAGMA foreign_keys = ON;

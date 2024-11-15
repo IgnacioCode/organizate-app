@@ -11,11 +11,11 @@ export async function GET(request) {
     console.log(plan_id);
     
 
-    const query = "SELECT * FROM Comments WHERE plan_id=?;";
+    const query = "SELECT comment_id, content, c.created_at, plan_id, c.user_id, username FROM Comments c JOIN Users u ON c.user_id=u.user_id WHERE plan_id=?;";
     //
     const DB = getRequestContext().env.DB;
     let db_response = await DB.prepare(query).bind(plan_id).run();
-    //let db_response = await DB.prepare(query).run();
+    
     if (db_response.success) {
         response = NextResponse.json({ message: 'Comentarios encontrados exitosamente', success: true, comments:db_response.results }, { status: 201 });
     }

@@ -1,5 +1,10 @@
 import { getRequestContext } from "@cloudflare/next-on-pages"
 
+export async function execute_query(DB, query, ...params) {
+    let db_response = await DB.prepare(query).bind(...params).run();
+    return db_response;
+}
+
 export async function get_user_id_by_email(email) {
 
     const query = "SELECT user_id FROM Users WHERE email=?";

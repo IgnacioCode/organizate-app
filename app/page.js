@@ -53,7 +53,7 @@ export default function HomePage() {
   const [planList, setPlanList] = useState([]);
 
   const getPlansList = async (email) => {
-    const response = await fetch('/api/get_plans?email=' + email, {
+    const response = await fetch('/api/plan/get_plans?email=' + email, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export default function HomePage() {
   const handleSumbit = async () => {
 
     try {
-      const response = await fetch('/api/create_plan', {
+      const response = await fetch('/api/plan/create_plan', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
