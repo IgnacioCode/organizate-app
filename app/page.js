@@ -48,6 +48,7 @@ export default function HomePage() {
 
   const [planName, setPlanName] = useState();
   const [planDesc, setPlanDesc] = useState();
+  const [inviteCode, setInviteCode] = useState("");
   const [date, setDate] = useState();
 
   const [planList, setPlanList] = useState([]);
@@ -70,6 +71,26 @@ export default function HomePage() {
         
     return planList;
   }
+
+  const handleJoinPlan = async () => {
+    try {
+      const response = await fetch('/api/plan/add_usr_plan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ invitation_key: inviteCode }),
+      });
+      if (!response.ok) {
+        throw new Error('Error al unirte al plan');
+      }
+      // Vuelve a obtener la lista de planes después de unirte
+      getPlansList(userEmail);
+      setInviteCode(""); // Limpiar el input después de unirte
+    } catch (error) {
+      console.error("Error al unirte al plan:", error);
+    }
+  };
 
   useEffect(() => {
     // Esto se ejecuta solo en el cliente
@@ -106,6 +127,14 @@ export default function HomePage() {
 
       {/* Main Content */}
       <main className="flex flex-1 flex-col items-center justify-center text-center p-8">
+      <div className="flex items-center space-x-4 mb-6 w-full max-w-xl">
+          <Input
+            placeholder="Write the invitation code"
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value)}
+          />
+          <Button onClick={handleJoinPlan}>Join plan!</Button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
           {/* Plan Panels */}
           {planList ? (planList.map((plan, index) => (

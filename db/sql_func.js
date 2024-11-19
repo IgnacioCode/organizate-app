@@ -39,11 +39,11 @@ export async function get_plan_id_by_invitation_key(invite_key) {
 
 export async function get_plans_by_user_id(user_id) {
 
-    const query = "SELECT * FROM PlansJoined JOIN Plans ON PlansJoined.plan_id = Plans.plan_id WHERE user_id=?";
-
+    const query = "SELECT pj.plan_id, p.user_id, name, date, description, CASE WHEN p.user_id=? THEN p.invite_key ELSE NULL END AS invite_key FROM PlansJoined pj JOIN Plans p ON pj.plan_id = p.plan_id WHERE pj.user_id=?";
+    
     try {
         const DB = getRequestContext().env.DB;
-        let db_response = await DB.prepare(query).bind(user_id).run();
+        let db_response = await DB.prepare(query).bind(user_id,user_id).run();
         return db_response.results;
     }
     catch (e) {

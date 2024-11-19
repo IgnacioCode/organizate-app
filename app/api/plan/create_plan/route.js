@@ -42,7 +42,7 @@ export async function POST(request) {
     const email = cookieStore.get('userEmail');
 
     const DB = getRequestContext().env.DB;
-    const new_inv_key = await hashPassword(email.value + name);
+    const new_inv_key = (await hashPassword(email.value + name)).substring(0, 32);
 
     let db_response
     try {

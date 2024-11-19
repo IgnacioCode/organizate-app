@@ -14,9 +14,12 @@ export async function POST(request) {
     const DB = getRequestContext().env.DB;
     const plan_id = await get_plan_id_by_invitation_key(invitation_key);
 
+    console.log(email.value, invitation_key, plan_id);
+    
+
     let db_response
     try {
-        const user_id = await get_user_id_by_email(DB, email.value)
+        const user_id = await get_user_id_by_email(email.value)
 
         const queryUsersPlansInsert = `
             INSERT INTO PlansJoined 
