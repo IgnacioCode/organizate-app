@@ -131,6 +131,12 @@ export default function HomePage() {
             <p className="text-lg font-bold">Date:</p>
             {selectedPlan.date ? (<p className="ml-2 text-lg " >{formatDate(selectedPlan.date)}</p>) : (<Skeleton className="h-4 w-[250px] ml-2" />)}
           </div>
+          {
+            selectedPlan.date ? (<div className="mt-2 flex flex-row items-center">
+              <p className="text-lg font-bold">Invitation key:</p>
+              <p className="ml-2 text-lg " >{selectedPlan.invite_key}</p>
+            </div>):(<div></div>)
+          }
           <div className="flex flex-row items-start">
             <div className="mt-2 flex flex-col items-start">
               <p className="text-lg font-bold">People invited</p>

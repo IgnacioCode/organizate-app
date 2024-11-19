@@ -39,7 +39,7 @@ export async function get_plan_id_by_invitation_key(invite_key) {
 
 export async function get_plans_by_user_id(user_id) {
 
-    const query = "SELECT * FROM Plans WHERE user_id=?";
+    const query = "SELECT * FROM PlansJoined JOIN Plans ON PlansJoined.plan_id = Plans.plan_id WHERE user_id=?";
 
     try {
         const DB = getRequestContext().env.DB;

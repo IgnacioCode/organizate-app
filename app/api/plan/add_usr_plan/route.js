@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { getRequestContext } from "@cloudflare/next-on-pages"
 import { cookies } from 'next/headers'
 import { execute_query } from '@/db/sql_func';
-import { hashPassword } from '@/app/utils/general';
 import { get_user_id_by_email, get_plan_id_by_invitation_key } from '@/db/sql_func';
 
 
@@ -37,10 +36,10 @@ export async function POST(request) {
     let response = null;
 
     if (db_response.success) {
-        response = NextResponse.json({ message: 'Plan creado exitosamente', success: true, plan_id: db_response[0].last_row_id }, { status: 201 });
+        response = NextResponse.json({ message: 'Usuario agregado a plan exitosamente', success: true, plan_id: db_response.last_row_id }, { status: 201 });
     }
     else {
-        response = NextResponse.json({ message: 'No se pudo crear el Plan', success: false }, { status: 404 });
+        response = NextResponse.json({ message: 'No se pudo agregar al plan', success: false }, { status: 404 });
     }
 
     return response;
