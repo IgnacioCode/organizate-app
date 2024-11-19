@@ -2,11 +2,8 @@
 PRAGMA foreign_keys = OFF;
 
 -- Eliminar tablas existentes si existen
-DROP TABLE IF EXISTS PollVotes;
-DROP TABLE IF EXISTS PollOptions;
 DROP TABLE IF EXISTS Polls;
 DROP TABLE IF EXISTS Comments;
-DROP TABLE IF EXISTS GroupPlans;
 DROP TABLE IF EXISTS GroupUsers;
 DROP TABLE IF EXISTS UserPlans;
 DROP TABLE IF EXISTS Groups;
@@ -54,6 +51,7 @@ CREATE TABLE PlansJoined (
     user_id INTEGER,
     plan_id INTEGER,
     joined_at TEXT DEFAULT (datetime('now')),
+    UNIQUE (user_id,plan_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (plan_id) REFERENCES Plans(plan_id)
 );
@@ -87,7 +85,7 @@ CREATE TABLE Polls (
     created_at TEXT DEFAULT (datetime('now')),
     options TEXT,
     votes TEXT,
-    FOREIGN KEY (plan_id) REFERENCES Plans(plan_id) ON DELETE CASCADE,
+    FOREIGN KEY (plan_id) REFERENCES Plans(plan_id) ON DELETE CASCADE
 );
 
 

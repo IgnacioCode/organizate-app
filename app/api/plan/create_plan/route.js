@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getRequestContext } from "@cloudflare/next-on-pages"
 import { cookies } from 'next/headers'
-import { execute_query, beginTrx, commitTrx, rollbackTrx, } from '@/db/sql_func';
+import { execute_query } from '@/db/sql_func';
+import { hashPassword } from '@/app/utils/general';
 
 async function get_user_id_by_email(DB, email) {
 
@@ -41,6 +42,7 @@ export async function POST(request) {
     const email = cookieStore.get('userEmail');
 
     const DB = getRequestContext().env.DB;
+    const new_inv_key = await hashPassword(email.value + name);
 
     let db_response
     try {
@@ -48,8 +50,8 @@ export async function POST(request) {
 
         const queryPlanInsert = `
             INSERT INTO Plans 
-            (user_id, name, description, date) 
-            VALUES (?, ?, ?, ?)
+            (user_id, name, description, date, invite_key) 
+            VALUES (?, ?, ?, ?, ?)
         `;
 
         const queryJoinedPlans = `
@@ -59,7 +61,7 @@ export async function POST(request) {
         `;
 
         db_response = await DB.batch([
-            DB.prepare(queryPlanInsert).bind(user_id, name, description, date),
+            DB.prepare(queryPlanInsert).bind(user_id, name, description, date, new_inv_key),
             DB.prepare(queryJoinedPlans).bind(user_id,await get_plan_max_plan_id(DB)+1)
         ])
 
