@@ -39,7 +39,7 @@ export async function POST(request) {
     let response = null;
 
     if (db_response.success) {
-        response = NextResponse.json({ message: 'Usuario agregado a plan exitosamente', success: true, plan_id: db_response.last_row_id }, { status: 201 });
+        response = NextResponse.json({ message: 'Usuario agregado a plan exitosamente', success: true }, { status: 201 });
     }
     else {
         response = NextResponse.json({ message: 'No se pudo agregar al plan', success: false }, { status: 404 });
