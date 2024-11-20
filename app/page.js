@@ -39,6 +39,7 @@ import PlanCard from "@/components/plan-card";
 import Link from "next/link"
 import Header from '@/components/header'
 import { formatDate } from "@/app/utils/general"
+import { DateTimePicker24h } from "@/components/date-time-picker";
 
 
 export default function HomePage() {
@@ -179,31 +180,13 @@ export default function HomePage() {
                   <Label htmlFor="username" className="text-right">
                     Date
                   </Label>
-                  <Popover className="col-span-3">
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "col-span-3 justify-start text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon />
-                        {date ? format(date, "PPP") : <span>Pick a date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        disabled={(date) =>
-                          date < new Date()
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <DateTimePicker24h 
+                    className="col-span-3"
+                    date={date}
+                    setDate={setDate}
+                  >
+                  </DateTimePicker24h>
+
                 </div>
               </div>
               <SheetFooter>

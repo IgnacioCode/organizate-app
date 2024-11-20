@@ -31,11 +31,13 @@ export function LoginForm() {
       });
       const data = await response.json();
       const user_id = data.user_id;
+      const username = data.username;
       console.log(data);
       
       if (data.success) {
         localStorage.setItem('userEmail', email);
         localStorage.setItem('userId', user_id);
+        localStorage.setItem('username', username);
         router.push("/")
       } else {
         toast({

@@ -53,7 +53,7 @@ CREATE TABLE PlansJoined (
     joined_at TEXT DEFAULT (datetime('now')),
     UNIQUE (user_id,plan_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (plan_id) REFERENCES Plans(plan_id)
+    FOREIGN KEY (plan_id) REFERENCES Plans(plan_id) ON DELETE CASCADE
 );
 
 -- Crear tabla GroupUsers

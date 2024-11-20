@@ -71,7 +71,6 @@ export default function HomePage() {
 
   }
 
-
   const sendNewComment = async () => {
 
     let values = {
@@ -91,6 +90,27 @@ export default function HomePage() {
     if (response.ok) {
       setTextValue('')
       getPlanComments()
+    }
+
+  }
+
+  const handleQuitPlan = async () => {
+
+    let values = {
+      plan_id: planIdURL,
+      invite_key: selectedPlan.invite_key
+    }
+
+    const response = await fetch('/api/plan/delete_plan', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (response.ok) {
+      window.location.href = '/'
     }
 
   }
@@ -203,7 +223,7 @@ export default function HomePage() {
             <div className="flex flex-row w-[70%] items-end">
               <Textarea value={textValue} onChange={(e) => setTextValue(e.target.value)} placeholder="Type your message here." id="newComment" className="resize-none h-[80px] " />
               <Button className="ml-2 w-[100px] h-[50px]" onClick={sendNewComment}>Send</Button>
-              <Button className="ml-2 w-[100px] h-[50px]" variant="destructive">Quit plan</Button>
+              <Button className="ml-2 w-[100px] h-[50px]" onClick={handleQuitPlan} variant="destructive">Quit plan</Button>
             </div>
 
           </div>
