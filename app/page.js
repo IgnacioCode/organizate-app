@@ -38,6 +38,7 @@ import { CalendarIcon } from "lucide-react"
 import PlanCard from "@/components/plan-card";
 import Link from "next/link"
 import Header from '@/components/header'
+import { formatDate } from "@/app/utils/general"
 
 
 export default function HomePage() {
@@ -144,6 +145,7 @@ export default function HomePage() {
               planName={plan.name}
               planDescription={plan.description}
               avatarSrc={plan.user_id}
+              planDate={formatDate(plan.date,"DD/MM")}
             />
           ))) : <div></div>}
           {/* Create Plan Button */}

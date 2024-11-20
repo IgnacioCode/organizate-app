@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getRequestContext } from "@cloudflare/next-on-pages"
 import { execute_query } from '@/db/sql_func';
 
 export async function GET(request) {
@@ -32,7 +33,7 @@ export async function GET(request) {
     let response = null;
 
     if (db_response.success) {
-        response = NextResponse.json({ message: 'Invitados obtenidos exitosamente', success: true }, { status: 201 });
+        response = NextResponse.json({ message: 'Invitados obtenidos exitosamente', success: true, guests:db_response.results }, { status: 201 });
     }
     else {
         response = NextResponse.json({ message: 'No se pudo obtener la lista de invitados para el plan', success: false }, { status: 404 });

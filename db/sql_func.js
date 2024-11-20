@@ -39,7 +39,7 @@ export async function get_plan_id_by_invitation_key(invite_key) {
 
 export async function get_plans_by_user_id(user_id) {
 
-    const query = "SELECT pj.plan_id, p.user_id, name, date, description, CASE WHEN p.user_id=? THEN p.invite_key ELSE NULL END AS invite_key FROM PlansJoined pj JOIN Plans p ON pj.plan_id = p.plan_id WHERE pj.user_id=?";
+    const query = "SELECT pj.plan_id, p.user_id, name, date, description, CASE WHEN p.user_id=? THEN p.invite_key ELSE NULL END AS invite_key FROM PlansJoined pj JOIN Plans p ON pj.plan_id = p.plan_id WHERE pj.user_id=? ORDER BY date";
     
     try {
         const DB = getRequestContext().env.DB;
