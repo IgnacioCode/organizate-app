@@ -9,17 +9,19 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
+import { set } from "date-fns";
 
 export default function EditProfilePage() {
-    const router = useRouter();
     const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
 
     const [userId, setUserId] = useState('');
     const [username, setUsername] = useState('');
+    const [newUsername, setNewUsername] = useState('');
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [email, setEmail] = useState('');
     const [avatar, setAvatar] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
@@ -31,39 +33,34 @@ export default function EditProfilePage() {
         setEmail(email || '');
     }, []);
 
-    const handleNameChange = (e) => setUsername(e.target.value);
-    const handlePasswordChange = (e) => setPassword(e.target.value);
     const handleAvatarChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             setAvatar(e.target.files[0]);
         }
     };
 
-    const handleSaveChanges = async () => {
-        // Crear un FormData para enviar la imagen y otros datos
-        const formData = new FormData();
-        formData.append('user_id', userId);
-        formData.append('username', username);
-        formData.append('password', password);
-        if (avatar) {
-            formData.append('avatar', avatar);
-        }
+    const handleUsernameUpdate = async () => {
+        const response = await fetch('/api/user/update_username', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                newUsername: newUsername,
+                user_id: userId,
+            }),
+        });
 
-        try {
-            const response = await fetch('/api/user/update_profile', {
-                method: 'POST',
-                body: formData,
-            });
+        const data = await response.json();
 
-            if (response.ok) {
-                // Actualiza el nombre de usuario en el localStorage
-                localStorage.setItem('username', username);
-                router.push('/'); // Redirigir a la página principal o un perfil
-            }
-        } catch (error) {
-            console.error("Error al actualizar el perfil:", error);
+        if (data.success) {
+            localStorage.setItem('username', newUsername);
+            setUsername(newUsername);
+            router.push('/profile/edit');
+        } else {
+
         }
-    };
+    }
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -73,7 +70,7 @@ export default function EditProfilePage() {
                 <div className="border rounded-lg p-6 shadow-md flex flex-col items-start lg:min-w-[400px]">
                     <h1 className="text-3xl font-bold">Edit Profile</h1>
 
-                    <div className="sm:flex sm:flex-col grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col justify-center">
                             <div className="mt-2 flex flex-row items-center">
                                 <p className="text-lg font-bold">Username:</p>
@@ -91,7 +88,7 @@ export default function EditProfilePage() {
                                 {userId ? (
                                     <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userId}.png`} />
                                 ) : (
-                                    <AvatarFallback>CNA</AvatarFallback>
+                                    <AvatarFallback>{username.substring(0,2)}</AvatarFallback>
                                 )}
                             </Avatar>
                         </div>
@@ -105,10 +102,10 @@ export default function EditProfilePage() {
                     <div className="mb-4 flex flex-row items-center">
                         <p className="text-lg text-left font-bold w-fit">Update profile picture:</p>
                         <div className="ml-4 grid items-center gap-1.5">
-                            <Input id="picture" type="file" className="pt-[6px]" />
+                            <Input id="picture" type="file" className="pt-[6px]" onChange={handleAvatarChange} />
                         </div>
                     </div>
-                    <Button className="w-[50%]" onClick={handleSaveChanges}>
+                    <Button className="w-[50%]" onClick={handleAvatarChange}>
                         Update profile picture
                     </Button>
 
@@ -119,12 +116,12 @@ export default function EditProfilePage() {
                         <p className="text-lg font-bold mb-4">Change username</p>
                         <Label className="mb-2 ">New username</Label>
                         <Input
-                            id="username"
-                            value={username}
-                            onChange={handleNameChange}
+                            id="newUsername"
+                            value={newUsername}
+                            onChange={(e) => setNewUsername(e.target.value)}
                             placeholder="Enter your new name"
                         />
-                        <Button className="mt-4 w-[50%]" onClick={handleSaveChanges}>
+                        <Button className="mt-4 w-[50%]" onClick={handleUsernameUpdate}>
                             Update username
                         </Button>
                     </div>
@@ -137,17 +134,17 @@ export default function EditProfilePage() {
                         <Input
                             id="username"
                             value={password}
-                            onChange={handleNameChange}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your new name"
                         />
                         <Label className="mb-2 mt-4 ">New password</Label>
                         <Input
                             id="username"
                             value={newPassword}
-                            onChange={handleNameChange}
+                            onChange={(e) => setNewPassword(e.target.value)}
                             placeholder="Enter your new name"
                         />
-                        <Button className="mt-4 w-[50%]" onClick={handleSaveChanges}>
+                        <Button className="mt-4 w-[50%]" onClick={handleUsernameUpdate}>
                             Update password
                         </Button>
                     </div>

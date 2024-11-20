@@ -192,7 +192,7 @@ export default function HomePage() {
                     <TableRow className="p-2">
                       <TableHead className="lg:w-[480px]">Comment</TableHead>
                       <TableHead className="lg:w-[175px]">Date</TableHead>
-                      <TableHead className="lg:w-[100px]">Author</TableHead>
+                      <TableHead className="lg:w-[175px]">Author</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

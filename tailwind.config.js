@@ -59,11 +59,7 @@ module.exports = {
 			fontFamily: {
 				sans: ['Open-Sans', 'sans-serif']
 			}
-		},
-		screens: {
-			'phone': '0px',
-			// => @media (min-width: 640px) { ... }
-		  },
+		}
 	},
 	plugins: [require("tailwindcss-animate")],
 };
