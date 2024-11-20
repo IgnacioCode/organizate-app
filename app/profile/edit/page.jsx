@@ -17,6 +17,7 @@ export default function EditProfilePage() {
     const [userId, setUserId] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
     const [email, setEmail] = useState('');
     const [avatar, setAvatar] = useState(null);
 
@@ -70,9 +71,9 @@ export default function EditProfilePage() {
 
             <main className="flex flex-1 flex-col items-center justify-center text-center p-8">
                 <div className="border rounded-lg p-6 shadow-md flex flex-col items-start lg:min-w-[400px]">
-                    <h1 className="text-3xl font-bold mb-4">Edit Profile</h1>
+                    <h1 className="text-3xl font-bold">Edit Profile</h1>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="sm:flex sm:flex-col grid grid-cols-2 gap-4">
                         <div className="flex flex-col justify-center">
                             <div className="mt-2 flex flex-row items-center">
                                 <p className="text-lg font-bold">Username:</p>
@@ -84,7 +85,7 @@ export default function EditProfilePage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-row items-center">
+                        <div className="flex flex-row items-center ml-4">
                             <p className="text-lg font-bold mr-4">Profile picture:</p>
                             <Avatar className="size-24">
                                 {userId ? (
@@ -101,44 +102,55 @@ export default function EditProfilePage() {
                     <Separator className="my-4" />
 
                     {/* Foto de perfil */}
-                    <div className="mt-2 flex flex-row items-center">
-                        <p className="text-lg font-bold w-64">Update profile picture:</p>
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <div className="mb-4 flex flex-row items-center">
+                        <p className="text-lg text-left font-bold w-fit">Update profile picture:</p>
+                        <div className="ml-4 grid items-center gap-1.5">
                             <Input id="picture" type="file" className="pt-[6px]" />
                         </div>
-
                     </div>
+                    <Button className="w-[50%]" onClick={handleSaveChanges}>
+                        Update profile picture
+                    </Button>
 
-
-
+                    <Separator className="mt-4 mb-2" />
 
                     {/* Formulario para cambiar el nombre */}
-                    <div className="flex flex-col w-full mb-4">
-                        <Label htmlFor="username" className="mb-2">Change Name</Label>
+                    <div className="flex flex-col w-full items-start">
+                        <p className="text-lg font-bold mb-4">Change username</p>
+                        <Label className="mb-2 ">New username</Label>
                         <Input
                             id="username"
                             value={username}
                             onChange={handleNameChange}
                             placeholder="Enter your new name"
                         />
+                        <Button className="mt-4 w-[50%]" onClick={handleSaveChanges}>
+                            Update username
+                        </Button>
                     </div>
+                    <Separator className="mt-4 mb-2" />
 
                     {/* Formulario para cambiar la contraseña */}
-                    <div className="flex flex-col w-full mb-4">
-                        <Label htmlFor="password" className="mb-2">Change Password</Label>
+                    <div className="flex flex-col w-full mb-4 items-start">
+                        <p className="text-lg font-bold mb-4">Change password</p>
+                        <Label className="mb-2 ">Current password</Label>
                         <Input
-                            id="password"
-                            type="password"
+                            id="username"
                             value={password}
-                            onChange={handlePasswordChange}
-                            placeholder="Enter your new password"
+                            onChange={handleNameChange}
+                            placeholder="Enter your new name"
                         />
+                        <Label className="mb-2 mt-4 ">New password</Label>
+                        <Input
+                            id="username"
+                            value={newPassword}
+                            onChange={handleNameChange}
+                            placeholder="Enter your new name"
+                        />
+                        <Button className="mt-4 w-[50%]" onClick={handleSaveChanges}>
+                            Update password
+                        </Button>
                     </div>
-
-                    {/* Botón para guardar cambios */}
-                    <Button className="w-full mt-4" onClick={handleSaveChanges}>
-                        Save Changes
-                    </Button>
                 </div>
             </main>
 

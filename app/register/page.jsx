@@ -29,7 +29,7 @@ function RegistrationForm() {
     console.log(values);
     
     try{
-      const response = await fetch('/api/create_usr', {
+      const response = await fetch('/api/user/create_usr', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
