@@ -62,6 +62,40 @@ export default function EditProfilePage() {
         }
     }
 
+    const handleAvatarUpdate = async () => {
+        if (!avatar) return
+
+        const formData = new FormData()
+        console.log(avatar);
+        
+        formData.append('file', avatar)
+        formData.append('user_id', userId)
+
+        const response = await fetch('/api/user/update_pfp', {
+            method: 'POST',
+            body: formData
+        })
+
+        const R2FormData = new FormData();
+        
+        const newFile = new File([avatar], `pfp_${userId}.png`, { type: avatar.type });
+        R2FormData.append('file', newFile);
+
+        const { url } = await response.json()
+        console.log(avatar.type);
+        
+        let r2response = await fetch(url, {
+            method: 'PUT',
+            'Content-Type': avatar.type,
+            body: newFile,
+        })
+        if(r2response.ok){
+            localStorage.setItem('pfp_version', new Date().getTime());
+            router.refresh();
+        }
+        
+    }
+
     return (
         <div className="min-h-screen flex flex-col">
             <Header userId={userId} />
@@ -86,7 +120,7 @@ export default function EditProfilePage() {
                             <p className="text-lg font-bold mr-4">Profile picture:</p>
                             <Avatar className="size-24">
                                 {userId ? (
-                                    <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userId}.png`} />
+                                    <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userId}.png?${localStorage.getItem('pfp_version')}`} />
                                 ) : (
                                     <AvatarFallback>{username.substring(0,2)}</AvatarFallback>
                                 )}
@@ -105,7 +139,7 @@ export default function EditProfilePage() {
                             <Input id="picture" type="file" className="pt-[6px]" onChange={handleAvatarChange} />
                         </div>
                     </div>
-                    <Button className="w-[50%]" onClick={handleAvatarChange}>
+                    <Button className="w-[50%]" onClick={handleAvatarUpdate}>
                         Update profile picture
                     </Button>
 
@@ -113,7 +147,7 @@ export default function EditProfilePage() {
 
                     {/* Formulario para cambiar el nombre */}
                     <div className="flex flex-col w-full items-start">
-                        <p className="text-lg font-bold mb-4">Change username</p>
+                        <p className="text-lg font-bold mb-3">Change username</p>
                         <Label className="mb-2 ">New username</Label>
                         <Input
                             id="newUsername"
@@ -128,8 +162,8 @@ export default function EditProfilePage() {
                     <Separator className="mt-4 mb-2" />
 
                     {/* Formulario para cambiar la contraseña */}
-                    <div className="flex flex-col w-full mb-4 items-start">
-                        <p className="text-lg font-bold mb-4">Change password</p>
+                    <div className="flex flex-col w-full items-start">
+                        <p className="text-lg font-bold mb-3">Change password</p>
                         <Label className="mb-2 ">Current password</Label>
                         <Input
                             id="username"

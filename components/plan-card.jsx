@@ -16,7 +16,7 @@ function PlanCard({ planIndex, planName, planDescription, avatarSrc, planDate })
                 </div>
 
                 <Avatar>
-                    <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${avatarSrc}.png`} />
+                    <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${avatarSrc}.png?${localStorage.getItem('pfp_version')}`} />
                     <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
             </div>

@@ -172,7 +172,7 @@ export default function HomePage() {
                   {invitedList.length ? (invitedList.map((invitee) => (
                     <><div key={invitee.user_id} className="flex flex-row items-center ml-2 mb-2 mt-2">
                       <Avatar>
-                        <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_` + invitee.user_id + '.png'} />
+                        <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${invitee.user_id}.png?${localStorage.getItem('pfp_version')}`} />
                         <AvatarFallback>IN</AvatarFallback>
                       </Avatar>
                       <p className="ml-2">{invitee.username}</p>
@@ -203,7 +203,7 @@ export default function HomePage() {
                         <TableCell className="">
                           <div className="flex flex-row items-center">
                             <Avatar>
-                              <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_` + comment.user_id + '.png'} />
+                              <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${comment.user_id}.png?${localStorage.getItem('pfp_version')}`} />
                               <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <p className="ml-2">{comment.username}</p>

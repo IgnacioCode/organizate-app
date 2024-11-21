@@ -19,9 +19,9 @@ export default function Header({ userId }) {
                 <Button variant="ghost" className="mr-3 h-[40px]">Log out</Button>
                 <Avatar>
                     {userId ? (
-                        <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userId}.png`} />
+                        <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userId}.png?${localStorage.getItem('pfp_version')}`} />
                     ) : (
-                        <AvatarFallback>CNA</AvatarFallback>
+                        <AvatarFallback>{userId.substring(0, 2)}</AvatarFallback>
                     )}
                 </Avatar>
             </div>

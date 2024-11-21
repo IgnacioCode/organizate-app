@@ -38,6 +38,7 @@ export function LoginForm() {
         localStorage.setItem('userEmail', email);
         localStorage.setItem('userId', user_id);
         localStorage.setItem('username', username);
+        localStorage.setItem('pfp_version', new Date().getTime());
         router.push("/")
       } else {
         toast({
