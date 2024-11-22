@@ -10,6 +10,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton"
 import { set } from "date-fns";
+import { useToast } from "@/hooks/use-toast"
 
 export default function EditProfilePage() {
     const STATIC_FILES_DOMAIN = "https://pub-74f750fca2674001b0494b726a588ec5.r2.dev";
@@ -22,6 +23,7 @@ export default function EditProfilePage() {
     const [email, setEmail] = useState('');
     const [avatar, setAvatar] = useState(null);
     const router = useRouter();
+    const { toast } = useToast()
 
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
@@ -67,7 +69,7 @@ export default function EditProfilePage() {
 
         const formData = new FormData()
         console.log(avatar);
-        
+
         formData.append('file', avatar)
         formData.append('user_id', userId)
 
@@ -75,26 +77,74 @@ export default function EditProfilePage() {
             method: 'POST',
             body: formData
         })
+        console.log(response);
+        
+        if (!response.ok) {
+            toast({
+                variant: "destructive",
+                title: "Error updating profile picture!",
+                description: "There was an error updating your profile picture, try again later."
+            })
+        }
 
         const R2FormData = new FormData();
-        
-        const newFile = new File([avatar], `pfp_${userId}.png`, { type: avatar.type });
+
+        const fileExtension = avatar.name.split('.').pop();
+        const newFile = new File([avatar], `pfp_${userId}.${fileExtension}`, { type: avatar.type });
         R2FormData.append('file', newFile);
 
         const { url } = await response.json()
         console.log(avatar.type);
-        
+
         let r2response = await fetch(url, {
             method: 'PUT',
             'Content-Type': avatar.type,
             body: newFile,
         })
-        if(r2response.ok){
+        if (r2response.ok) {
             localStorage.setItem('pfp_version', new Date().getTime());
             router.refresh();
         }
-        
+        else {
+            toast({
+                variant: "destructive",
+                title: "Error updating profile picture!",
+                description: "There was an error updating your profile picture, try again later."
+            })
+        }
+
     }
+
+    const handlePasswordUpdate = async () => {
+        const response = await fetch('/api/user/update_psw', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                oldPassword: password,
+                newPassword: newPassword,
+                user_id: userId,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            toast({
+                variant: "success",
+                title: "Password updated successfully!",
+                description: "Your password has been updated successfully."
+            })
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Error updating password!",
+                description: "There was an error updating your password, try again later."
+            })
+        }
+    }
+
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -122,7 +172,7 @@ export default function EditProfilePage() {
                                 {userId ? (
                                     <AvatarImage src={`${STATIC_FILES_DOMAIN}/pfp_${userId}.png?${localStorage.getItem('pfp_version')}`} />
                                 ) : (
-                                    <AvatarFallback>{username.substring(0,2)}</AvatarFallback>
+                                    <AvatarFallback>{username.substring(0, 2)}</AvatarFallback>
                                 )}
                             </Avatar>
                         </div>
@@ -167,6 +217,7 @@ export default function EditProfilePage() {
                         <Label className="mb-2 ">Current password</Label>
                         <Input
                             id="username"
+                            type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your new name"
@@ -174,11 +225,12 @@ export default function EditProfilePage() {
                         <Label className="mb-2 mt-4 ">New password</Label>
                         <Input
                             id="username"
+                            type="password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             placeholder="Enter your new name"
                         />
-                        <Button className="mt-4 w-[50%]" onClick={handleUsernameUpdate}>
+                        <Button className="mt-4 w-[50%]" onClick={handlePasswordUpdate}>
                             Update password
                         </Button>
                     </div>

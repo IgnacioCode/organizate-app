@@ -25,6 +25,12 @@ export async function POST(request) {
     const fileSize = file.size;
 
     console.log(fileName, fileType, fileSize,'pfp_'+user_id+'.png');
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+
+    if (!allowedTypes.includes(fileType)) {
+        return NextResponse.json({ message: 'Tipo de archivo no permitido. Solo se permiten imágenes.', success: false }, { status: 400 });
+    }
     
     try {
         const signedUrl = await getSignedUrl(
