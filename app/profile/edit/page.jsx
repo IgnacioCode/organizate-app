@@ -131,6 +131,8 @@ export default function EditProfilePage() {
         const data = await response.json();
 
         if (data.success) {
+            setPassword('');
+            setNewPassword('');
             toast({
                 variant: "success",
                 title: "Password updated successfully!",
