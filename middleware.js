@@ -25,5 +25,5 @@ export default async function middleware(req) {
 }
 
 export const config = {
-    matcher: ['/((?!_next|static|api/usr_login|login|register|api/user/create_usr|api/check_cred).*)'],
+    matcher: ['/((?!_next|static|api/usr_login|login|register|api/user/create_usr|api/check_cred|api/user/send_psw_rec).*)'],
 };

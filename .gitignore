@@ -26,8 +26,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+
 # local env files
 .env*.local
+gmail_tkn_cred.json
 
 # vercel
 .vercel
