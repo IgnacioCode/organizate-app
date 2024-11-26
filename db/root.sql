@@ -5,10 +5,11 @@ PRAGMA foreign_keys = OFF;
 DROP TABLE IF EXISTS Polls;
 DROP TABLE IF EXISTS Comments;
 DROP TABLE IF EXISTS GroupUsers;
-DROP TABLE IF EXISTS UserPlans;
 DROP TABLE IF EXISTS Groups;
 DROP TABLE IF EXISTS Plans;
 DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS PlansJoined;
+DROP TABLE IF EXISTS RecoverPassword;
 
 -- Crear tabla Users
 CREATE TABLE Users (
@@ -86,6 +87,14 @@ CREATE TABLE Polls (
     options TEXT,
     votes TEXT,
     FOREIGN KEY (plan_id) REFERENCES Plans(plan_id) ON DELETE CASCADE
+);
+
+CREATE TABLE RecoverPassword(
+    recover_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    token TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
 
